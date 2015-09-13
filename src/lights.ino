@@ -291,9 +291,9 @@ void juggle(CRGB* pixels)
 {
     // colored dots, weaving in and out of sync with each other.
     fadeToBlackBy(pixels, NUM_LEDS, 20);
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 5; i++)
     {
-        pixels[beatsin16(i+7,0,NUM_LEDS)] |= ColorFromPalette(gCurrentPalette, gIndex);
+        pixels[beatsin16(i+7, 0, NUM_LEDS)] |= ColorFromPalette(gCurrentPalette, gIndex + i * 3);
     }
 }
 
@@ -397,10 +397,10 @@ void pulseTracer(CRGB* pixels)
     for (int i = 1; i < NUM_LEDS; i++)
     {
         pixels[(i + pos) % (NUM_LEDS - 1) + 1] =
-            ColorFromPalette(gCurrentPalette, gIndex + (i * offset), 255 - beatsin8(bpm, 100, 255));
+            ColorFromPalette(gCurrentPalette, gIndex + (i * offset), 255 - beatsin8(bpm, 0, 100));
     }
 
-    pixels[0] = ColorFromPalette(gCurrentPalette, gIndex, beatsin8(bpm, 60, 255));
+    pixels[0] = ColorFromPalette(gCurrentPalette, gIndex, beatsin8(bpm, 100, 255));
 }
 
 void beatPhaser(CRGB* pixels)
