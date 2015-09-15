@@ -300,26 +300,32 @@ void juggle(CRGB* pixels)
 void wipe(CRGB* pixels)
 {
     // a sweep across the jewel hexagon.
+    const uint8_t steplength = 60;
+    const uint8_t delay = 6;
     static long lastStepTime = 0;
     static uint8_t step = 0;
     static uint8_t direction = 0;
     int intensity = beatsin8(9, 0, 160);
     fadeToBlackBy(pixels, NUM_LEDS, beatsin8(6, 2, 20));
-    CRGB currentColor = ColorFromPalette(gCurrentPalette, gIndex);
+    CRGB currentColor = ColorFromPalette(gCurrentPalette, gIndex, 255 - (intensity / 2));
 
-    if (gCurrentTime - lastStepTime >= 100)
+    if (gCurrentTime - lastStepTime >= steplength)
     {
-        if (step == 0)
+        if (step == 1)
         {
             pixels[0] = currentColor + CRGB(intensity, intensity, intensity);
         }
 
-        if (step < 3)
+        if (step <= 2)
         {
             wipeStep(pixels, currentColor, step, direction, false);
             step++;
         }
-        else if (step == 3)
+        else if (step < 2 + delay)
+        {
+            step++;
+        }
+        else if (step == 2 + delay)
         {
             step = 0;
             direction = random8Except(6, direction);
@@ -331,13 +337,13 @@ void wipe(CRGB* pixels)
 
 void whirl(CRGB* pixels)
 {
-    const uint8_t bpm = 6;
-    const uint8_t cycles = 8;
+    const uint8_t bpm = 7;
+    const uint8_t cycles = 7;
     uint8_t phase = beatsin8(bpm, 0, 6 * cycles);
 
-    wipeStep(pixels, ColorFromPalette(gCurrentPalette, gIndex + 60), 0, phase, false);
-    wipeStep(pixels, ColorFromPalette(gCurrentPalette, gIndex), 1, phase, false);
-    wipeStep(pixels, ColorFromPalette(gCurrentPalette, gIndex + 65), 2, phase, false);
+    wipeStep(pixels, ColorFromPalette(gCurrentPalette, gIndex), 0, phase, false);
+    wipeStep(pixels, ColorFromPalette(gCurrentPalette, gIndex + phase), 1, phase, false);
+    wipeStep(pixels, ColorFromPalette(gCurrentPalette, gIndex + 5), 2, phase, false);
     pixels[0] = ColorFromPalette(gCurrentPalette, gIndex) + CRGB(phase * 4, phase * 4, phase * 4);
 }
 
